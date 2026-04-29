@@ -16,7 +16,6 @@ pipeline {
         stage('Tests') {
             steps {
                 sh 'npm run test:ci'
-                sh "grep '^SF' coverage/lcov.info || echo 'ERREUR: aucun chemin SF trouvé dans lcov.info'"
             }
         }
 
