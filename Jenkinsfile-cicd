@@ -13,11 +13,11 @@ pipeline {
             }
         }
 
-        // stage('Tests') {
-        //     steps {
-        //         sh 'npm test'
-        //     }
-        // }
+        stage('Tests') {
+            steps {
+                sh 'npm run test:ci'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
