@@ -16,6 +16,8 @@ pipeline {
         stage('Tests') {
             steps {
                 sh 'npm run test:ci'
+                sh 'ls -la coverage/ || echo "ERREUR: dossier coverage absent"'
+                sh 'head -5 coverage/lcov.info || echo "ERREUR: lcov.info absent ou vide"'
             }
         }
 
