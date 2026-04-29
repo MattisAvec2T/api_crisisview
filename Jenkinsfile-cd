@@ -19,14 +19,15 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USER',  passwordVariable: 'DOCKERHUB_TOKEN'),
-                    usernamePassword(credentialsId: 'db-credentials',        usernameVariable: 'DB_USER',         passwordVariable: 'DB_PASSWORD'),
+                    usernamePassword(credentialsId: 'db-password',           usernameVariable: 'DB_USER',         passwordVariable: 'DB_PASSWORD'),
                     string(credentialsId: 'db-root-password', variable: 'DB_ROOT_PASSWORD')
                 ]) {
                     sshagent(['vm-ssh-key-api']) {
                         sh "scp -o StrictHostKeyChecking=no compose.prod.yml ${params.VM_USER}@${params.VM_IP}:/home/${params.VM_USER}/compose.prod.yml"
                         sh """
                             ssh -o StrictHostKeyChecking=no ${params.VM_USER}@${params.VM_IP} '
-                                printf "DOCKERHUB_USER=${DOCKERHUB_USER}\\nIMAGE_TAG=${params.IMAGE_TAG}\\nPORT=${params.PORT}\\nDB_NAME=${params.DB_NAME}\\nDB_USER=${params.DB_USER}\\nDB_PASSWORD=${DB_PASSWORD}\\nDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}\\n" > /tmp/.env.api &&
+                                printf "DOCKERHUB_USER=${DOCKERHUB_USER}\\nIMAGE_TAG=${params.IMAGE_TAG}\\nPORT=${params.PORT}\\nDB_NAME=${params.DB_NAME}\\nDB_USER=${DB_USER}\\nDB_PASSWORD=${DB_PASSWORD}\\nDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}\\n" > /tmp/.env.api &&
+                                docker rm -f api-crisisview || true &&
                                 docker compose -f /home/${params.VM_USER}/compose.prod.yml --env-file /tmp/.env.api pull &&
                                 docker compose -f /home/${params.VM_USER}/compose.prod.yml --env-file /tmp/.env.api up -d &&
                                 rm /tmp/.env.api
