@@ -7,7 +7,6 @@ pipeline {
         string(name: 'PORT',      defaultValue: '3001',        description: 'Port exposé sur l\'API')
         string(name: 'IMAGE_TAG', defaultValue: 'latest',      description: 'Tag de l\'image à déployer — "latest" correspond à la version la plus récente, indiquer un numéro de build pour rollback (ex. 6)')
         string(name: 'DB_NAME',   defaultValue: 'incident_db', description: 'Nom de la base de données')
-        string(name: 'DB_USER',   defaultValue: 'app',         description: 'Utilisateur de la base de données')
     }
 
     environment {
@@ -19,8 +18,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_TOKEN'),
-                    string(credentialsId: 'db-password',      variable: 'DB_PASSWORD'),
+                    usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USER',  passwordVariable: 'DOCKERHUB_TOKEN'),
+                    usernamePassword(credentialsId: 'db-credentials',        usernameVariable: 'DB_USER',         passwordVariable: 'DB_PASSWORD'),
                     string(credentialsId: 'db-root-password', variable: 'DB_ROOT_PASSWORD')
                 ]) {
                     sshagent(['vm-ssh-key-api']) {
