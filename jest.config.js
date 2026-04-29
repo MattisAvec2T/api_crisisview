@@ -8,6 +8,7 @@ export default {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   transform: {},
+  coverageProvider: 'v8',
   coverageReporters: ['lcov', 'text'],
   coverageDirectory: 'coverage',
 };
